@@ -18,10 +18,11 @@ z_c = np.array([0])
 
 def likelihood(x_c, y_c, z_c):
     t_t = np.sqrt((x-x_c)**2+(y-y_c)**2+(z-z_c)**2)/v
-    return -0.5/sigma_t**2*np.sum((t-t_t)**2)
+    return np.exp(-0.5/sigma_t**2*np.sum((t-t_t)**2))
 
 def loglikelihood(q_x, q_y, q_z):
-    return #TODO
+    t_t = np.sqrt((x-x_c)**2+(y-y_c)**2+(z-z_c)**2)/v
+    return -0.5/sigma_t**2*np.sum((t-t_t)**2)
 
 def gradient_loglikelihood(q_x, q_y, q_z):
     return #TODO
@@ -59,7 +60,7 @@ def H(q_x, q_y, q_z, p_x, p_y, p_z):
     return K + U
 
 
-def MCMC(nsteps): #TODO meter x, y, z
+def MCMC(nsteps): 
     q_x = np.zeros(nsteps)
     q_x[0] = np.random.normal(x_c,1)
 
