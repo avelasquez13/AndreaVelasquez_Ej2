@@ -26,7 +26,7 @@ def loglikelihood(q_x, q_y, q_z):
 def gradient_loglikelihood(q_x, q_y, q_z):
     return #TODO
 
-def leapfrog(q_x, q_y, q_z, p_x, p_y, p_z, delta_t=0.1, niter=5): #TODO meter x, y, z
+def leapfrog(q_x, q_y, q_z, p_x, p_y, p_z, delta_t=0.1, niter=5):
     q_x_new = q_x 
     p_x_new = p_x
 
@@ -35,6 +35,7 @@ def leapfrog(q_x, q_y, q_z, p_x, p_y, p_z, delta_t=0.1, niter=5): #TODO meter x,
 
     q_z_new = q_z 
     p_z_new = p_z
+
     for i in range(niter):
         deriv_x, deriv_y, deriv_z = gradient_loglikelihood(q_x_new, q_y_new, q_z_new)
         p_x_new = p_x_new + 0.5 * delta_t * deriv_x
