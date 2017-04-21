@@ -16,18 +16,18 @@ x_c = np.array([5])
 y_c = np.array([2])
 z_c = np.array([0])
 
-def likelihood(x_c, y_c):
+def likelihood(x_c, y_c, z_c):
     t_t = np.sqrt((x-x_c)**2+(y-y_c)**2+(z-z_c)**2)/v
     return -0.5/sigma_t**2*np.sum((t-t_t)**2)
 
-def loglikelihood(q):
-    return -q*q
+def loglikelihood(q_x, q_y, q_z):
+    return #TODO
 
 def gradient_loglikelihood(q):
-    return -2*q
+    return #TODO
 
-def leapfrog(q,p, delta_t=1E-1, niter=5):
-    q_new = q
+def leapfrog(q,p, delta_t=1E-1, niter=5): #TODO meter x, y, z
+    q_new = q 
     p_new = p
     for i in range(niter):
         p_new = p_new + 0.5 * delta_t * gradient_loglikelihood(q_new)
@@ -35,13 +35,13 @@ def leapfrog(q,p, delta_t=1E-1, niter=5):
         p_new = p_new + 0.5 * delta_t * gradient_loglikelihood(q_new)
     return q_new, p_new
 
-def H(q,p):
+def H(q,p): #TODO meter x, y, z
     K = 0.5 * p * p
     U = -loglikelihood(q)
     return K + U
 
 
-def MCMC(nsteps):
+def MCMC(nsteps): #TODO meter x, y, z
     q = np.zeros(nsteps)
     q[0] = np.random.normal(0,1)
 
