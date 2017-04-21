@@ -53,33 +53,54 @@ def leapfrog(q_x, q_y, q_z, p_x, p_y, p_z, delta_t=0.1, niter=5):
     return q_x_new, p_x_new, q_y_new, p_y_new, q_z_new, p_z_new
 
 
-def H(q,p): #TODO meter x, y, z
-    K = 0.5 * p * p
-    U = -loglikelihood(q)
+def H(q_x, q_y, q_z, p_x, p_y, p_z):
+    K = 0.5 * (p_x*p_x + p_y*p_y + p_z*p_z)
+    U = -loglikelihood(q_x, q_y, q_z)
     return K + U
 
 
 def MCMC(nsteps): #TODO meter x, y, z
-    q = np.zeros(nsteps)
-    q[0] = np.random.normal(0,1)
+    q_x = np.zeros(nsteps)
+    q_x[0] = np.random.normal(x_c,1)
 
-    p = np.zeros(nsteps)
-    p[0] = np.random.normal(0,1)
+    p_x = np.zeros(nsteps)
+    p_x[0] = np.random.normal(0,1)
+
+    q_y = np.zeros(nsteps)
+    q_y[0] = np.random.normal(y_c,1)
+
+    p_y = np.zeros(nsteps)
+    p_y[0] = np.random.normal(0,1)
+
+    q_z = np.zeros(nsteps)
+    q_z[0] = np.random.normal(z_c,1)
+
+    p_z = np.zeros(nsteps)
+    p_z[0] = np.random.normal(0,1)
     
     for i in range(1, nsteps):
-        p[i] = np.random.normal(0,1)
-        q_new, p_new = leapfrog(q[i-1],p[i-1])
-        E_new = H(q_new, p_new)
-        E_old = H(q[i-1], p[i-1])
+        p_x[i] = np.random.normal(0,1)
+        p_y[i] = np.random.normal(0,1)
+        p_z[i] = np.random.normal(0,1)
+
+        q_x_new, p_x_new, q_y_new, p_y_new, q_z_new, p_z_new = leapfrog(q_x[i-1], q_y[i-1], q_z[i-1], p_x[i-1], p_y[i-1], p_z[i-1])
+
+        E_new = H(q_x_new, q_y_new, q_z_new, p_x_new, p_y_new, p_z_new)
+        E_old = H(q_x[i-1], q_y[i-1], q_z[i-1], p_x[i-1], p_y[i-1], p_z[i-1])
 
         alpha = min(1.0, np.exp(-E_new + E_old))
         beta = np.random.random()
         if beta < alpha:
-            q[i] = q_new
+            q_x[i] = q_x_new
+            q_y[i] = q_y_new
+            q_z[i] = q_z_new
         else:
-            q[i] = q[i-1]
+            q_x[i] = q_x[i-1]
+            q_y[i] = q_y[i-1]
+            q_z[i] = q_z[i-1]
 
-    return q
+    return q_x, q_y, q_z
+
 
 def gelman_rubin(distro, obs_data, N=10000, M=4, sigma=0.1):
     walks = {}
