@@ -23,17 +23,34 @@ def likelihood(x_c, y_c, z_c):
 def loglikelihood(q_x, q_y, q_z):
     return #TODO
 
-def gradient_loglikelihood(q):
+def gradient_loglikelihood(q_x, q_y, q_z):
     return #TODO
 
-def leapfrog(q,p, delta_t=1E-1, niter=5): #TODO meter x, y, z
-    q_new = q 
-    p_new = p
+def leapfrog(q_x, q_y, q_z, p_x, p_y, p_z, delta_t=0.1, niter=5): #TODO meter x, y, z
+    q_x_new = q_x 
+    p_x_new = p_x
+
+    q_y_new = q_y 
+    p_y_new = p_y
+
+    q_z_new = q_z 
+    p_z_new = p_z
     for i in range(niter):
-        p_new = p_new + 0.5 * delta_t * gradient_loglikelihood(q_new)
-        q_new = q_new + delta_t * p_new
-        p_new = p_new + 0.5 * delta_t * gradient_loglikelihood(q_new)
-    return q_new, p_new
+        deriv_x, deriv_y, deriv_z = gradient_loglikelihood(q_x_new, q_y_new, q_z_new)
+        p_x_new = p_x_new + 0.5 * delta_t * deriv_x
+        q_x_new = q_x_new + delta_t * p_x_new
+        p_x_new = p_x_new + 0.5 * delta_t * deriv_x
+
+        p_y_new = p_y_new + 0.5 * delta_t * deriv_y
+        q_y_new = q_y_new + delta_t * p_y_new
+        p_y_new = p_y_new + 0.5 * delta_t * deriv_y
+
+        p_z_new = p_z_new + 0.5 * delta_t * deriv_z
+        q_z_new = q_z_new + delta_t * p_z_new
+        p_z_new = p_z_new + 0.5 * delta_t * deriv_z
+
+    return q_x_new, p_x_new, q_y_new, p_y_new, q_z_new, p_z_new
+
 
 def H(q,p): #TODO meter x, y, z
     K = 0.5 * p * p
