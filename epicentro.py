@@ -9,3 +9,15 @@ t = np.array([3.23, 3.82, 2.27, 3.04, 5.65, 6.57])
 
 sigma_t = 0.05 
 v = 5
+
+def MCH:
+    
+
+
+
+
+def RubinGel:
+    
+
+
+
