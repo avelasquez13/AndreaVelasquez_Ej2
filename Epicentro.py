@@ -12,22 +12,27 @@ v = 5.0
 
 N = 10000
 
-x_c = np.array([5])
+x_c = np.array([8])
 y_c = np.array([2])
 z_c = np.array([0])
 
-def likelihood(x_c, y_c, z_c):
-    t_t = np.sqrt((x-x_c)**2+(y-y_c)**2+(z-z_c)**2)/v
+def likelihood(q_x, q_y, q_z):
+    t_t = np.sqrt((x-q_x)**2+(y-q_y)**2+(z-q_z)**2)/v
     return np.exp(-0.5/sigma_t**2*np.sum((t-t_t)**2))
 
 def loglikelihood(q_x, q_y, q_z):
-    t_t = np.sqrt((x-x_c)**2+(y-y_c)**2+(z-z_c)**2)/v
+    t_t = np.sqrt((x-q_x)**2+(y-q_y)**2+(z-q_z)**2)/v
     return -0.5/sigma_t**2*np.sum((t-t_t)**2)
 
 def gradient_loglikelihood(q_x, q_y, q_z):
-    return #TODO
+    dist = np.sqrt((x-q_x)**2+(y-q_y)**2+(z-q_z)**2)
+    factor = 1/sigma_t**2 * (t-dist/v)/(v*dist)
+    deriv_x = np.sum(factor*(x-q_x))
+    deriv_y = np.sum(factor*(x-q_y))
+    deriv_z = np.sum(factor*(x-q_z))
+    return deriv_x, deriv_y, deriv_z
 
-def leapfrog(q_x, q_y, q_z, p_x, p_y, p_z, delta_t=0.1, niter=5):
+def leapfrog(q_x, q_y, q_z, p_x, p_y, p_z, delta_t=1E-2, niter=5):
     q_x_new = q_x 
     p_x_new = p_x
 
@@ -103,30 +108,6 @@ def MCMC(nsteps):
     return q_x, q_y, q_z
 
 
-def gelman_rubin(distro, obs_data, N=10000, M=4, sigma=0.1):
-    walks = {}
-    for m in range(M):
-        walks[m] = #Llamar a MCH sample_metropolis_hastings(distro, obs_data, N, sigma)
-    
-    R = np.zeros(N-1)
-    for n in range(1, N):
-        mean_walks = np.zeros(M)
-        variance_walks = np.zeros(M)
-        for m in range(M):
-            mean_walks[m] = walks[m][:n].mean()
-            variance_walks[m] = walks[m][:n].std() ** 2
-        mean_general = mean_walks.mean()    
-        B = 0.0
-        for m in range(M):
-            B += (mean_walks[m] - mean_general)**2
-        B = n*B/(M-1)
-        W = variance_walks.mean()
-    
-        R[n-1] = (n-1)/n + (B/W)*(M+1)/(n*M)
-    
-    return walks, R
-
-
-q_chain = MCMC(N)
-plt.hist(q_chain[500:], bins=20)
+q_x_chain, q_y_chain, q_z_chain = MCMC(N)
+plt.hist(q_x_chain, bins=200)
 plt.show()
