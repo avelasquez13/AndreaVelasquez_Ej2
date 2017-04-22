@@ -128,8 +128,8 @@ def gelman_rubin(N, M=4):
             mw_y[m] = walks_y[m][:n].mean()
             mw_z[m] = walks_z[m][:n].mean()
             vw_x[m] = walks_x[m][:n].std() ** 2
-            vw_y[m] = walks_x[m][:n].std() ** 2
-            vw_z[m] = walks_x[m][:n].std() ** 2
+            vw_y[m] = walks_y[m][:n].std() ** 2
+            vw_z[m] = walks_z[m][:n].std() ** 2
         mg_x = mw_x.mean()
         mg_y = mw_y.mean()
         mg_z = mw_z.mean()
@@ -156,12 +156,22 @@ def gelman_rubin(N, M=4):
 
 R = gelman_rubin(N, M=4)
 
-plt.plot(R[0,:])
-plt.plot(R[1,:])
-plt.plot(R[2,:])
-plt.show()
+plt.plot(R[0,9000:],label='$R_x$')
+plt.plot(R[1,9000:],label='$R_y$')
+plt.plot(R[2,9000:],label='$R_z$')
+plt.legend()
+plt.savefig('GelmanRubinTest.png')
 plt.close()
 
 q_x_chain, q_y_chain, q_z_chain = MCMC(N)
 plt.hist(q_x_chain, bins=200)
-plt.show()
+plt.savefig('Dist_x.png')
+plt.close()
+
+plt.hist(q_y_chain, bins=200)
+plt.savefig('Dist_y.png')
+plt.close()
+
+plt.hist(q_z_chain, bins=200)
+plt.savefig('Dist_z.png')
+plt.close()
