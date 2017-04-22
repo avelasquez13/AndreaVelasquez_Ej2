@@ -14,7 +14,7 @@ N = 30000
 
 x_c = np.array([8])
 y_c = np.array([9])
-z_c = np.array([7])
+z_c = np.array([-7])
 
 def likelihood(q_x, q_y, q_z):
     t_t = np.sqrt((x-q_x)**2+(y-q_y)**2+(z-q_z)**2)/v
