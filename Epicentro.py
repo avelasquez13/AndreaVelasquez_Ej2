@@ -10,11 +10,11 @@ t = np.array([3.23, 3.82, 2.27, 3.04, 5.65, 6.57])
 sigma_t = 0.05
 v = 5.0
 
-N = 10000
+N = 30000
 
 x_c = np.array([8])
 y_c = np.array([2])
-z_c = np.array([0])
+z_c = np.array([-2])
 
 def likelihood(q_x, q_y, q_z):
     t_t = np.sqrt((x-q_x)**2+(y-q_y)**2+(z-q_z)**2)/v
@@ -28,11 +28,11 @@ def gradient_loglikelihood(q_x, q_y, q_z):
     dist = np.sqrt((x-q_x)**2+(y-q_y)**2+(z-q_z)**2)
     factor = 1/sigma_t**2 * (t-dist/v)/(v*dist)
     deriv_x = np.sum(factor*(x-q_x))
-    deriv_y = np.sum(factor*(x-q_y))
-    deriv_z = np.sum(factor*(x-q_z))
+    deriv_y = np.sum(factor*(y-q_y))
+    deriv_z = np.sum(factor*(z-q_z))
     return deriv_x, deriv_y, deriv_z
 
-def leapfrog(q_x, q_y, q_z, p_x, p_y, p_z, delta_t=1E-2, niter=5):
+def leapfrog(q_x, q_y, q_z, p_x, p_y, p_z, delta_t=1E-3, niter=5):
     q_x_new = q_x 
     p_x_new = p_x
 
@@ -156,22 +156,22 @@ def gelman_rubin(N, M=4):
 
 R = gelman_rubin(N, M=4)
 
-plt.plot(R[0,9000:],label='$R_x$')
-plt.plot(R[1,9000:],label='$R_y$')
-plt.plot(R[2,9000:],label='$R_z$')
+plt.plot(R[0,15000:],label='$R_x$')
+plt.plot(R[1,15000:],label='$R_y$')
+plt.plot(R[2,15000:],label='$R_z$')
 plt.legend()
 plt.savefig('GelmanRubinTest.png')
 plt.close()
 
 q_x_chain, q_y_chain, q_z_chain = MCMC(N)
-plt.hist(q_x_chain, bins=200)
+plt.hist(q_x_chain[15000:], bins=50)
 plt.savefig('Dist_x.png')
 plt.close()
 
-plt.hist(q_y_chain, bins=200)
+plt.hist(q_y_chain[15000:], bins=50)
 plt.savefig('Dist_y.png')
 plt.close()
 
-plt.hist(q_z_chain, bins=200)
+plt.hist(q_z_chain[15000:], bins=50)
 plt.savefig('Dist_z.png')
 plt.close()
