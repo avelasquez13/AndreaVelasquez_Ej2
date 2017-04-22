@@ -107,7 +107,7 @@ def MCMC(nsteps):
 
     return q_x, q_y, q_z
 
-def gelman_rubin(distro, obs_data, N=10000, M=4, sigma=0.1):
+def gelman_rubin(N, M=4):
     walks_x = {}
     walks_y = {}
     walks_z = {}
@@ -153,6 +153,14 @@ def gelman_rubin(distro, obs_data, N=10000, M=4, sigma=0.1):
     
     return R
 
+
+R = gelman_rubin(N, M=4)
+
+plt.plot(R[0,:])
+plt.plot(R[1,:])
+plt.plot(R[2,:])
+plt.show()
+plt.close()
 
 q_x_chain, q_y_chain, q_z_chain = MCMC(N)
 plt.hist(q_x_chain, bins=200)
