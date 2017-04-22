@@ -107,6 +107,52 @@ def MCMC(nsteps):
 
     return q_x, q_y, q_z
 
+def gelman_rubin(distro, obs_data, N=10000, M=4, sigma=0.1):
+    walks_x = {}
+    walks_y = {}
+    walks_z = {}
+    for m in range(M):
+        walks_x[m], walks_y[m], walks_z[m] =MCMC(N)
+    
+    R = np.zeros([3,N-1])
+    for n in range(1, N):
+        mw_x = np.zeros(M)
+        mw_y = np.zeros(M)
+        mw_z = np.zeros(M)
+        
+        vw_x = np.zeros(M)
+        vw_y = np.zeros(M)
+        vw_z = np.zeros(M)
+        for m in range(M):
+            mw_x[m] = walks_x[m][:n].mean()
+            mw_y[m] = walks_y[m][:n].mean()
+            mw_z[m] = walks_z[m][:n].mean()
+            vw_x[m] = walks_x[m][:n].std() ** 2
+            vw_y[m] = walks_x[m][:n].std() ** 2
+            vw_z[m] = walks_x[m][:n].std() ** 2
+        mg_x = mw_x.mean()
+        mg_y = mw_y.mean()
+        mg_z = mw_z.mean()
+        B_x = 0.0
+        B_y = 0.0 
+        B_z = 0.0
+        for m in range(M):
+            B_x += (mw_x[m] - mg_x)**2
+            B_y += (mw_y[m] - mg_y)**2
+            B_z += (mw_z[m] - mg_z)**2
+        B_x = n*B_x/(M-1)
+        B_y = n*B_y/(M-1)
+        B_z = n*B_z/(M-1)
+        W_x = vw_x.mean()
+        W_y = vw_y.mean()
+        W_z = vw_z.mean()
+    
+        R[0][n-1] = (n-1)/n + (B_x/W_x)*(M+1)/(n*M)
+        R[1][n-1] = (n-1)/n + (B_y/W_y)*(M+1)/(n*M)
+        R[2][n-1] = (n-1)/n + (B_z/W_z)*(M+1)/(n*M)
+    
+    return R
+
 
 q_x_chain, q_y_chain, q_z_chain = MCMC(N)
 plt.hist(q_x_chain, bins=200)
