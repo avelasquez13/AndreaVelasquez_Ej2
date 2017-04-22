@@ -13,7 +13,7 @@ v = 5.0
 N = 30000
 
 x_c = np.array([8])
-y_c = np.array([2])
+y_c = np.array([9])
 z_c = np.array([-2])
 
 def likelihood(q_x, q_y, q_z):
@@ -164,15 +164,15 @@ plt.savefig('GelmanRubinTest.png')
 plt.close()
 
 q_x_chain, q_y_chain, q_z_chain = MCMC(N)
-plt.hist(q_x_chain[15000:], bins=50)
+plt.hist(q_x_chain[25000:], bins=50)
 plt.savefig('Dist_x.png')
 plt.close()
 
-plt.hist(q_y_chain[15000:], bins=50)
+plt.hist(q_y_chain[25000:], bins=50)
 plt.savefig('Dist_y.png')
 plt.close()
 
-plt.hist(q_z_chain[15000:], bins=50)
+plt.hist(q_z_chain[25000:], bins=50)
 plt.savefig('Dist_z.png')
 plt.close()
 
